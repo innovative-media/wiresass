@@ -1,0 +1,43 @@
+#!/bin/bash
+
+PROJECT=$1
+
+# If no path was given, fail
+[ -z "$PROJECT" ] && { echo "$(tput setaf 1)Error: No path supplied.$(tput sgr0)"; exit 1; }
+
+# Setup the paths
+if [ ${PROJECT:0:1} == "/" ]
+then
+	
+	BASEPATH=$PROJECT
+
+	[[ ! -w ${BASEPATH%/*} ]] && { echo "$(tput setaf 1)Error: You do not have sufficient permissions to ${BASEPATH%/*}$(tput sgr0)"; exit 1; }
+
+else
+	
+	SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+	BASEPATH="$SOURCE/$PROJECT"
+
+	[[ ! -w $SOURCE ]] && { echo "$(tput setaf 1)Error: You do not have sufficient permissions to $SOURCE$(tput sgr0)"; exit 1; }
+
+fi
+
+PUBLICPATH="$BASEPATH/public"
+
+echo "$(tput setaf 3)Installing WireSass into $BASEPATH$(tput sgr0)"
+
+composer create-project laravel/laravel $BASEPATH --prefer-dist
+
+# Install frontend boilerplate
+cd $PUBLICPATH
+svn export https://github.com/innovative-media/core-public-boilerplate.git/trunk
+mv trunk/* .
+mv trunk/.* .
+rm trunk -Rf
+npm install
+bower install
+grunt
+
+chmod 777 $BASEPATH/app/storage/* -R
+
+echo "$(tput setaf 2)WireSass installed successfully!$(tput sgr0)"
