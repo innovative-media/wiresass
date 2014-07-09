@@ -8,13 +8,13 @@ PROJECT=$1
 # Setup the paths
 if [ ${PROJECT:0:1} == "/" ]
 then
-	
+
 	BASEPATH=$PROJECT
 
 	[[ ! -w ${BASEPATH%/*} ]] && { echo "$(tput setaf 1)Error: You do not have sufficient permissions to ${BASEPATH%/*}$(tput sgr0)"; exit 1; }
 
 else
-	
+
 	SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 	BASEPATH="$SOURCE/$PROJECT"
 
@@ -22,14 +22,15 @@ else
 
 fi
 
-PUBLICPATH="$BASEPATH/public"
+PREPATH="$BASEPATH/pre"
 
 echo "$(tput setaf 3)Installing WireSass into $BASEPATH$(tput sgr0)"
 
 composer create-project laravel/laravel $BASEPATH --prefer-dist
 
 # Install frontend boilerplate
-cd $PUBLICPATH
+mkdir $PREPATH
+cd $PREPATH
 svn export https://github.com/innovative-media/core-public-boilerplate.git/trunk
 mv trunk/* .
 mv trunk/.* .
