@@ -31,14 +31,12 @@ composer create-project laravel/laravel $BASEPATH --prefer-dist
 # Install frontend boilerplate
 mkdir $PREPATH
 cd $PREPATH
-svn export https://github.com/innovative-media/core-public-boilerplate.git/trunk
+svn export https://github.com/innovative-media/gulp-public-boilerplate.git/trunk
 mv trunk/* .
 mv trunk/.* .
 rm trunk -Rf
-npm install
-bower install
-grunt
+npm install && bower install && gulp install
 
-chmod 777 $BASEPATH/app/storage/* -R
+chmod 777 $BASEPATH/app/storage/ -R
 
 echo "$(tput setaf 2)WireSass installed successfully!$(tput sgr0)"
